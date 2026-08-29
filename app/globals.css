@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --background: #07111f;
+  --foreground: #f8fafc;
+  --surface: #0d1a2c;
+  --surface-raised: #12233a;
+  --border: #20334d;
+  --muted: #91a2b8;
+  --brand: #52e0b3;
+  --ai: #8b7cff;
+  --attention: #f5b84b;
+  --danger: #f47b79;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-ai: var(--ai);
+  --color-attention: var(--attention);
+  --color-danger: var(--danger);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), sans-serif;
+  min-width: 320px;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+
+body, button, a, input, textarea, select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, input, textarea, select {
+  outline-color: var(--brand);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+}
+
+main {
+  min-width: 0;
+}
+
+[data-scroll-container] {
+  scrollbar-gutter: stable;
+}
+
+[data-card] {
+  min-width: 0;
+}
+
+[data-safe-wrap] {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
