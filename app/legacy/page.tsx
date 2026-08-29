@@ -1,5 +1,5 @@
-import { LegacyDashboard } from "../page";
+import ProgressPage from "../page";
 
 export default function LegacyDashboardPage() {
-  return <LegacyDashboard />;
+  return <ProgressPage />;
 }
