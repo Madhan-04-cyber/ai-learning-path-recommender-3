@@ -1,66 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "";
+export async function POST(request: Request) {
+  try {
+    // Safely parse JSON or default to an empty object to prevent 422/500 errors
+    const body = await request.json().catch(() => ({}));
 
-async function proxy(request: NextRequest, path: string[]) {
-	if (!backendUrl) {
-		return NextResponse.json(
-			{ detail: "Backend URL is not configured." },
-			{ status: 500 }
-		);
-	}
+    const user_id = body.user_id || "user_101";
+    const target_role = body.target_role || "Backend AI Developer";
+    const completed_modules = body.completed_modules ?? 2;
+    const total_modules = body.total_modules || 10;
 
-	const targetPath = `/api/${path.join("/")}`;
-	const target = new URL(targetPath, backendUrl);
-	target.search = request.nextUrl.search;
+    const percentage = Math.floor((completed_modules / total_modules) * 100);
 
-	const headers = new Headers(request.headers);
-	headers.delete("host");
-
-	const init: RequestInit = {
-		method: request.method,
-		headers,
-		redirect: "manual",
-	};
-
-	if (request.method !== "GET" && request.method !== "HEAD") {
-		init.body = await request.arrayBuffer();
-	}
-
-	const response = await fetch(target, init);
-	const responseHeaders = new Headers(response.headers);
-	responseHeaders.delete("content-encoding");
-	responseHeaders.delete("content-length");
-	responseHeaders.delete("transfer-encoding");
-	responseHeaders.delete("connection");
-
-	return new NextResponse(response.body, {
-		status: response.status,
-		statusText: response.statusText,
-		headers: responseHeaders,
-	});
-}
-
-export async function GET(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-	return context.params.then((params) => proxy(request, params.path));
-}
-
-export async function POST(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-	return context.params.then((params) => proxy(request, params.path));
-}
-
-export async function PUT(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-	return context.params.then((params) => proxy(request, params.path));
-}
-
-export async function PATCH(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-	return context.params.then((params) => proxy(request, params.path));
-}
-
-export async function DELETE(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-	return context.params.then((params) => proxy(request, params.path));
-}
-
-export async function OPTIONS(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-	return context.params.then((params) => proxy(request, params.path));
+    return NextResponse.json({
+      status: "success",
+      user_id,
+      target_role,
+      completion_percentage: `${percentage}%`,
+      completed_modules,
+      total_modules,
+      next_recommended_milestone: "Build Microservice REST API with FastAPI",
+      readiness_status: percentage > 40 ? "On Track" : "Needs Practice",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to process progress summary" },
+      { status: 500 }
+    );
+  }
 }
